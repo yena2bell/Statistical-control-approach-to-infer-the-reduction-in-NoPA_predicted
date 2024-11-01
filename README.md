@@ -61,5 +61,5 @@ reduction of NoPA_predicted by control {'GATA3': 1} is
 - The first line confirms the file address for the structural network model.
 - The second line reaffirms the applied control.
 - The third line confirms the FVS search method. If ```--find_minimum_FVSs True``` was used, it displays: this algorithm will find minimum FVSs using brute force search.
-- The subsequent lines display NoPA_predicted calculated under specific input conditions. Input nodes refer to nodes with no in-coming edges, and an input condition specifies each input node's Boolean value. In this example, there are four input nodes: 'IL12', 'IFNb', 'IL18', and 'TCR', creating a total of 16 possible input conditions.
-- Finally, the sum of NoPA_predicted across all input conditions provides the overall NoPA_predicted value.
+- The subsequent lines display 'reduction of NoPA_predicted' calculated under specific input conditions. Input nodes refer to nodes with no in-coming edges, and an input condition specifies each input node's Boolean value. In this example, there are four input nodes: 'IL12', 'IFNb', 'IL18', and 'TCR', creating a total of 16 possible input conditions.
+- Finally, the sum of 'reduction of NoPA_predicted' across all input conditions provides the overall 'reduction of NoPA_predicted' value.
