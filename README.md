@@ -18,8 +18,9 @@ Download this GitHub repository to use the program.
 
 
 # Requirements
-NumPy (v1.25.0+) https://numpy.org/
-Note: Older versions are also expected to work.
+- NumPy (v1.25.0+) https://numpy.org/
+
+  - Note: Older versions are also expected to work.
 
 # Features
 - Reads a network structure file formatted as TSV.
