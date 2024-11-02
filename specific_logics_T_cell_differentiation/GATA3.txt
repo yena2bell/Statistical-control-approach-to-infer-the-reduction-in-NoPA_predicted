@@ -1,0 +1,7 @@
+regulators order: GATA3, STAT6, Tbet
+
+def specific_logic_of_GATA3(array_state):
+    state_GATA3 = array_state[0]
+    state_STAT6 = array_state[1]
+    state_Tbet = array_state[2]
+    return  ( ( state_GATA3  ) and not ( state_Tbet  ) )  or ( ( state_STAT6  ) and not ( state_Tbet  ) ) 
