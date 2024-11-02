@@ -99,7 +99,6 @@ if __name__ == "__main__":
     control = parse_control(args.control)
     find_minimum_FVSs = args.find_minimum_FVSs
     specific_logics_folder = args.set_specific_logics
-    print(specific_logics_folder, specific_logics_folder.isspace())
     print("the file to read the network structure is ",command_file_address)
     print("control to apply the structural network is ",control)
     if find_minimum_FVSs:
