@@ -26,7 +26,7 @@ Download this GitHub repository to use the program.
 - Reads a network structure file formatted as TSV.
 - Calculates the reduction of NoPA_predicted for each input condition as well as the overall reduction with a given control.
 - Allows for choosing between a brute-force search to find the minimum FVS or an approximate minimum FVS calculation.
-- If Boolean logic for a specific gene is known, it can be applied to the corresponding node to improve the prediction accuracy of NoPA_predicted. Not yet implemented.
+- If Boolean logic for a specific gene is known, it can be applied to the corresponding node to improve the prediction accuracy of NoPA_predicted.
 
 # Basic usage example
 Run main.py from the downloaded folder.
@@ -63,3 +63,47 @@ reduction of NoPA_predicted by control {'GATA3': 1} is
 - The third line confirms the FVS search method. If ```--find_minimum_FVSs True``` was used, it displays: this algorithm will find minimum FVSs using brute force search.
 - The subsequent lines display 'reduction of NoPA_predicted' calculated under specific input conditions. Input nodes refer to nodes with no in-coming edges, and an input condition specifies each input node's Boolean value. In this example, there are four input nodes: 'IL12', 'IFNb', 'IL18', and 'TCR', creating a total of 16 possible input conditions.
 - Finally, the sum of 'reduction of NoPA_predicted' across all input conditions provides the overall 'reduction of NoPA_predicted' value.
+
+# How to use Boolean logic for nodes with known logic
+If the Boolean logic of certain nodes is known, instead of using the ensemble average function derived from all possible canalizing Boolean logics, the known Boolean logic can be employed. 
+
+To do this, first create an appropriate folder ('folder for specific logics') and save the information regarding the nodes with known Boolean logic within that folder. For each node, create a file named after the node name. 
+
+In the first line of that file, record the regulators' order, formatted as 'regulators order: R_0, R_1, ... R_n'. Here, each regulator_i must match the node name of the corresponding regulator node in the structural network model.
+
+And below the second line, define the Boolean logic function using Python's function definition method. This function should take a numpy array of the same length as the number of regulators as its argument, and return either 1 or 0. 
+
+The format example of a file (the file name is 'X.txt' for node X) containing the logic information of a node is as follows.
+
+```
+regulators order: R_0, R_1, R_2
+
+def specific_logic_of_X(array_state):
+    R_0 = array_state[0]
+    R_1 = array_state[1]
+    R_2 = array_state[2]
+    return R_0 and (R_1 or R_2)
+```
+
+Here, the i-th element of the argument array (array_argument[i]) should correspond to the state of the i-th regulator (R_i) as listed in the first line.
+
+Regarding the T cell differentiation model, an example using the known Boolean logic for 'GATA3' and 'IL4' is as follows.
+
+```python main.py "./example_structural_networks/T cell differentiation.tsv" --control "GATA3 = 1" --set_specific_logics "./specific_logics_T_cell_differentiation"```
+
+The results are as follows.
+
+```the file to read the network structure is  ./example_structural_networks/T cell differentiation.tsv
+control to apply the structural network is  {'GATA3': 1}
+this algorithm will find approximated minimum FVSs
+logic information of nodes ['GATA3', 'IL4'] are used
+reduction of NoPA_predicted by control {'GATA3': 1} in input condition {'IFNb': 0, 'IL18': 0, 'TCR': 0, 'IL12': 0} is
+0.7350515342620478
+reduction of NoPA_predicted by control {'GATA3': 1} in input condition {'IFNb': 0, 'IL18': 0, 'TCR': 0, 'IL12': 1} is
+0.7217855798192772
+...
+reduction of NoPA_predicted by control {'GATA3': 1} is
+9.66768637048193
+```
+
+The nodes with the specific logic reflected are confirmed on the fourth line.
