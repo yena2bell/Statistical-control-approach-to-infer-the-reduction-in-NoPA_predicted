@@ -340,6 +340,12 @@ class Network_structure_splited:
 
         If 'return_eas'=True, 
         it also returns the probability of 1 calculated for each node during this process."""
+        input_nodes_controlled = set(input_condition).intersection(control)
+        if input_nodes_controlled:
+            for input_node_controlled in input_nodes_controlled:
+                if input_condition[input_node_controlled] != control[input_node_controlled]:
+                    return 0
+                
         controlled_node_objs = self._apply_control_to_nodes(control)
             
         NoPA_predicted = 0

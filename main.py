@@ -122,6 +122,14 @@ if __name__ == "__main__":
             network_split_obj.set_specific_logic_to_node(node, regulator_order, specific_logic_function)
 
     input_nodes = network_split_obj.get_input_nodes()
+    input_nodes_controlled = set(input_nodes).intersection(control)
+    if input_nodes_controlled:
+        print("\nAttension\n")
+        print("{} among the input nodes have been selected as control targets.".format(input_nodes_controlled))
+        print("In this case, for input conditions where there is a contradiction with the control condition,")
+        print("the controlled NoPA_pred is calculated as 0,")
+        print("and the nominal NoPA_pred for that input condition is computed as the reduced NoPA_pred.\n\n")
+    
     reduction_of_NoPA_predicted = 0
     for Boolean_state_comb in itertools.product((0,1), repeat=len(input_nodes)):
         input_condition = {input_nodes[i]:Boolean_state for i, Boolean_state in enumerate(Boolean_state_comb)}
