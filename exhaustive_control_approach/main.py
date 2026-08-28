@@ -3,6 +3,7 @@ import os, collections, time, itertools
 from Nested_canalizing_function_generator import get_nested_canalizing_functions_with_regulators_num_of
 from Boolean_truthtable_calculation import Boolean_function
 from Attractor_landscape_calculation_for_specific_logic_combination import Logic_combination
+from Ensemble_result_read_and_analyze import Ensemble_data
 
 class Structural_network_info:
     def __init__(self, address_structural_network_tsv_file):
@@ -109,7 +110,15 @@ class Ensemble_of_all_possible_nc_logics:
         self.perturbation_textresult_map = collections.defaultdict(lambda:'\t'.join(result_order)+"\n")
         self.perturbation_textresult_refined = {}
 
+    def _reset_perturbation_result_maps(self):
+        result_order = ["logic_combination","NoPA", "NoA","attractor_landscape"]
+        self.perturbation_NoPA_distribution_map = collections.defaultdict(collections.Counter)
+        self.perturbation_NoA_distribution_map = collections.defaultdict(collections.Counter)
+        self.perturbation_textresult_map = collections.defaultdict(lambda:'\t'.join(result_order)+"\n")
+        self.perturbation_textresult_refined = {}
+
     def calculate_ensemble_of_all_possible_nc_logics(self, num_of_perturbation=0, folder_address=".\\", folder_name="ensemble_of_all_possible_nc_logics"):
+        self._reset_perturbation_result_maps()
         self._make_save_folder(folder_address, folder_name)
         i_count = 0
         for nc_logic_comb, node_logics_map in self._make_logic_combinations():
@@ -118,6 +127,10 @@ class Ensemble_of_all_possible_nc_logics:
             # print(i_count, perturbation_nodesorder_map)
             # print(i_count, perturbation_landscape_map)
             self._analyze_and_summarize_NoPA_NoA(nc_logic_comb, perturbation_landscape_map)
+
+            i_count += 1
+            if i_count == 50:
+                break
             
         self._refine_textresult_map(perturbation_nodesorder_map)
         self._save_results(folder_address, folder_name)
@@ -242,42 +255,10 @@ class Ensemble_of_all_possible_nc_logics:
 
     def _save_results(self, folder_address, folder_name):
         save_folder = os.path.join(folder_address, folder_name)
-        for perturbation_tuple_form, result in self.perturbation_textresult_map.items():
+        for perturbation_tuple_form, result in self.perturbation_textresult_refined.items():
             perturbation_str_form = self._convert_perturbation_tuple_to_str(perturbation_tuple_form)
             with open(os.path.join(save_folder, "{}.tsv".format(perturbation_str_form)),'w') as f:
                 f.write(result)
-
-
-    # def _calculate_attractor_landscapes_given_num_of_perturbation(self, num_of_perturbation=0):
-    #     """모든 가능한 logic combination 각각에 대해, num_of_perturbation 개수의 
-    #     nodes에 perturbation 을 한 뒤의 attractor landscape를 계산.
-    #     logic combinations 가 많을 거라는 생각이 들어서, 하나의 logic combination
-    #     계산할 때마다 기록을 하게 할 예정."""
-    #     result_order = ["logic_combination","NoPA", "NoA","attractor_landscape"]
-    #     perturbation_NoPA_distribution_map = collections.defaultdict(collections.Counter)
-    #     perturbation_NoA_distribution_map = collections.defaultdict(collections.Counter)
-    #     perturbation_textresult_map = collections.defaultdict(lambda:'\t'.join(result_order)+"\n")
-        
-    #     for nc_logic_comb, node_logics_map in self._make_logic_combinations():
-    #         perturbation_nodesorder_map, perturbation_landscape_map = self._calculate_attractor_landscape_of_specific_logics(node_logics_map, num_of_perturbation)
-            
-    #         for perturbation, attractor_landscape in perturbation_landscape_map.items():
-    #             analyzed_result = self._analyze_attractor_landscape(attractor_landscape)
-    #             perturbation_NoPA_distribution_map[perturbation][analyzed_result["NoPA"]] += 1
-    #             perturbation_NoA_distribution_map[perturbation][analyzed_result["NoA"]] += 1
-                
-    #             line_summary = "{}\t{}".format(nc_logic_comb, self._write_attractor_landscape_to_text_form(analyzed_result, attractor_landscape))
-    #             print(line_summary)
-    #             perturbation_textresult_map[perturbation] += line_summary
-        
-    #     for perturbation, textresult in perturbation_textresult_map.items():
-    #         perturbation_dict = {node:state for node, state in perturbation}
-    #         nodes_order = perturbation_nodesorder_map[perturbation]
-    #         NoPA_distribution = dict(perturbation_NoPA_distribution_map[perturbation])
-    #         NoA_distribition = dict(perturbation_NoA_distribution_map[perturbation])
-    #         perturbation_textresult_map[perturbation] = "perturbation:\t{}\nnode_order:\t{}\nNoPA_distribution:\t{}\nNoA_ditribution:\t{}\n{}".format(perturbation_dict, nodes_order, NoPA_distribution, NoA_distribition, textresult)
-        
-    #     return perturbation_textresult_map
 
         
 if __name__ == "__main__":
@@ -289,3 +270,7 @@ if __name__ == "__main__":
     # calculate nominal NoPA
     ensemble_of_all_possible_nc_logics.calculate_ensemble_of_all_possible_nc_logics(1)
     # calculate perturbed NoPA with 1 node perturbation
+
+    ensemble_data = Ensemble_data()
+    selected_logic_comb = (128, 128, 128, 8, 224, 254)
+    ensemble_data.draw_true_ava_NoPA_scatter_plot(selected_logic_comb)

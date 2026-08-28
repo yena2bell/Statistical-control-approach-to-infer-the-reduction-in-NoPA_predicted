@@ -19,6 +19,9 @@ Download this GitHub repository to use the program.
 
 # Requirements
 - NumPy (v1.25.0+) https://numpy.org/
+- Pandas (v2.3.3) https://pandas.pydata.org/
+- Matplotlib (v3.10.9) https://matplotlib.org/
+- Seaborn (v0.13.2) https://seaborn.pydata.org/
 
   - Note: Older versions are also expected to work.
 
